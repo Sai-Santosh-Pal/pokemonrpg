@@ -1,10 +1,29 @@
 from settings import *
+from pytmx.util_pygame import load_pygame
+from os.path import join
+from os.path import dirname
+from os.path import abspath
+
+from sprites import Sprite
 
 class Game:
     def __init__(self):
         pygame.init()
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption('PokemonRPG')
+
+        self.all_sprites = pygame.sprite.Group()
+
+        self.import_assets()
+        self.setup(self.tmx_maps['world'], 'house')
+
+    def import_assets(self):
+        BASE_DIR = dirname(abspath(__file__))
+        self.tmx_maps = {'world': load_pygame(join(BASE_DIR, '..', 'data', 'maps', 'world.tmx'))}
+        
+    def setup(self, tmx_map, player_start_pos):
+        for x,y, surf in tmx_map.get_layer_by_name('Terrain').tiles():
+            Sprite((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites)
 
     def run(self):
         while True:
@@ -13,6 +32,7 @@ class Game:
                     pygame.exit()
                     exit()
 
+            self.all_sprites.draw(self.display_surface)
             pygame.display.update()
 
 if __name__ == '__main__':
