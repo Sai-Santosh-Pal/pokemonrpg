@@ -28,6 +28,9 @@ class Game:
         for x,y, surf in tmx_map.get_layer_by_name('Terrain').tiles():
             Sprite((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites)
 
+        for obj in tmx_map.get_layer_by_name('Objects'):
+            Sprite((obj.x, obj.y), obj.image, self.all_sprites)
+
         for obj in tmx_map.get_layer_by_name("Entities"):
             if obj.name == "Player" and obj.properties['pos'] == player_start_pos:
                 self.player = Player((obj.x, obj.y), self.all_sprites)
