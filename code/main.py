@@ -18,14 +18,20 @@ class Game:
         self.all_sprites = AllSprites()
 
         self.import_assets()
-        self.setup(self.tmx_maps['world'], 'house')
+        self.setup(self.tmx_maps['hospital'], 'world')
 
     def import_assets(self):
         BASE_DIR = dirname(abspath(__file__))
-        self.tmx_maps = {'world': load_pygame(join(BASE_DIR, '..', 'data', 'maps', 'world.tmx'))}
+        self.tmx_maps = {
+            'world': load_pygame(join(BASE_DIR, '..', 'data', 'maps', 'world.tmx')),
+            'hospital': load_pygame(join(BASE_DIR, '..', 'data', 'maps', 'hospital.tmx')),
+            }
         
     def setup(self, tmx_map, player_start_pos):
         for x,y, surf in tmx_map.get_layer_by_name('Terrain').tiles():
+            Sprite((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites)
+
+        for x,y, surf in tmx_map.get_layer_by_name('Terrain Top').tiles():
             Sprite((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites)
 
         for obj in tmx_map.get_layer_by_name('Objects'):
