@@ -49,8 +49,24 @@ def import_tilemap(cols, rows, *path):
 			frames[(col, row)] = cutout_surf
 	return frames
 
+def character_importer(cols, rows, *path):
+	frame_dict = import_tilemap(cols, rows, *path)
+	new_dict = {}
+	for row, direction in enumerate(('down', 'left', 'right', 'up')):
+		new_dict[direction] = [frame_dict[(col, row)] for col in range(cols)]
+		new_dict[f'{direction}_idle'] = [frame_dict[(0,row)]]
+	print(new_dict)
+	return new_dict
+
+def all_character_import(*path):
+	new_dict = {}
+	for _, __, image_names in walk(join(*path)):
+		for image in image_names:
+			image_name = image.split('.')[0]
+			new_dict[image_name] = character_importer(4,4,*path, image_name)
+	return new_dict
+
 def coast_importer(cols, rows, *path):
-	# print(*path)
 	frame_dict = import_tilemap(cols, rows, *path)
 	new_dict = {}
 	terr = ['grass', 'grass_i', 'sand_i', 'sand', 'rock', 'rock_i', 'ice', 'ice_i']
@@ -64,10 +80,7 @@ def coast_importer(cols, rows, *path):
 		for key, pos in sides.items():
 			new_dict[terrain][key] = [frame_dict[(pos[0] + index*3, pos[1] + row)] for row in range(0, rows, 3)]
 			print(f"Key: {key}, Terrain: {terrain}")
-		# 	# print("--")
-		# 	# print(terrain)
-		# 	# print("--")
-		# # print(new_dict)
+
 	return new_dict
 
 # print(coast_importer())
