@@ -4,7 +4,7 @@ from os.path import join
 from os.path import dirname
 from os.path import abspath
 
-from sprites import Sprite, AnimatedSprite, MonsterPatchSprite
+from sprites import Sprite, AnimatedSprite, MonsterPatchSprite, BorderSprite
 from entities import Player, Character
 from groups import AllSprites
 
@@ -18,6 +18,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.all_sprites = AllSprites()
+        self.collision_sprites = pygame.sprite.Group()
 
         self.import_assets()
         self.setup(self.tmx_maps['world'], 'house')
@@ -63,7 +64,10 @@ class Game:
             if obj.name == 'top':
                 Sprite((obj.x, obj.y), obj.image, self.all_sprites, WORLD_LAYERS['top'])
             else:
-                Sprite((obj.x, obj.y), obj.image, self.all_sprites)
+                Sprite((obj.x, obj.y), obj.image, (self.all_sprites, self.collision_sprites))
+
+        for obj in tmx_map.get_layer_by_name('Collisions'):
+            BorderSprite((obj.x, obj.y), pygame.Surface((obj.width, obj.height)), (self.all_sprites, self.collision_sprites))
 
         for obj in tmx_map.get_layer_by_name('Monsters'):
             MonsterPatchSprite((obj.x, obj.y), obj.image, self.all_sprites, obj.properties['biome'])
@@ -80,7 +84,7 @@ class Game:
                 Character(
                     pos = (obj.x, obj.y), 
                     frames = self.overworld_frames['characters'][obj.properties['graphic']], 
-                    groups = self.all_sprites,
+                    groups = (self.all_sprites, self.collision_sprites),
                     facing_direction = obj.properties['direction'])
 
 
