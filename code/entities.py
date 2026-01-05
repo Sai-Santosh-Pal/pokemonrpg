@@ -61,7 +61,9 @@ class Player(Entity):
     def collisions(self, axis):
         for sprite in self.collision_sprites:
             if sprite.hitbox.colliderect(self.hitbox):
-                print('collision')
+                if self.direction.x > 0:
+                    self.hitbox.right = sprite.hitbox.left
+                self.rect.centerx = self.hitbox.centerx
 
     def update(self, dt):
         self.y_sort = self.rect.centery
