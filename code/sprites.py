@@ -1,4 +1,5 @@
 from settings import *
+from support import import_image
 
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, pos, surf, groups, z = WORLD_LAYERS['main']):

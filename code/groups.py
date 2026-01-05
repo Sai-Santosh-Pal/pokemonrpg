@@ -1,10 +1,16 @@
 from settings import *
+from support import import_image
+from os.path import dirname
+from os.path import abspath
+from entities import Entity 
 
 class AllSprites(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
+        BASE_DIR = dirname(abspath(__file__))
         self.display_surface = pygame.display.get_surface()
         self.offset = vector()
+        self.shadow_surf = import_image(BASE_DIR, '..', 'graphics', 'other', 'shadow')
 
     def draw(self, player_center):
         self.offset.x = -(player_center[0] - WINDOW_WIDTH / 2)
@@ -16,6 +22,6 @@ class AllSprites(pygame.sprite.Group):
 
         for layer in (bg_sprites, main_sprites, fg_sprites):
             for sprite in layer:
+                if isinstance(sprite, Entity):
+                    self.display_surface.blit(self.shadow_surf, sprite.rect.topleft + self.offset + vector(40, 110))
                 self.display_surface.blit(sprite.image, sprite.rect.topleft + self.offset)
-
-
