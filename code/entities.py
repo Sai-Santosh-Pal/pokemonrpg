@@ -35,8 +35,9 @@ class Character(Entity):
         super().__init__(pos, frames, groups, facing_direction)
 
 class Player(Entity):
-    def __init__(self, pos, frames, groups, facing_direction):
+    def __init__(self, pos, frames, groups, facing_direction, collision_sprites):
         super().__init__(pos, frames, groups, facing_direction)
+        self.collision_sprites = collision_sprites
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -53,8 +54,14 @@ class Player(Entity):
 
 
     def move(self, dt):
-        self.rect.center += self.direction * self.speed * dt
-        self.hitbox.center = self.rect.center
+        self.rect.centerx += self.direction.x * self.speed * dt
+        self.hitbox.centerx = self.rect.centerx
+        self.collisions('horizontal')
+
+    def collisions(self, axis):
+        for sprite in self.collision_sprites:
+            if sprite.hitbox.colliderect(self.hitbox):
+                print('collision')
 
     def update(self, dt):
         self.y_sort = self.rect.centery
