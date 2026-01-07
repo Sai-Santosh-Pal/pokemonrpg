@@ -1,4 +1,5 @@
 from settings import *
+from game_data import *
 from pytmx.util_pygame import load_pygame
 from os.path import join
 from os.path import dirname
@@ -7,6 +8,7 @@ from os.path import abspath
 from sprites import Sprite, AnimatedSprite, MonsterPatchSprite, BorderSprite, CollidableSprite
 from entities import Player, Character
 from groups import AllSprites
+from dialog import DialogTree
 
 from support import *
 
@@ -40,6 +42,10 @@ class Game:
             'water': import_folder(BASE_DIR, '..', 'graphics', 'tilesets', 'water'),
             'coast': coast_importer(24, 12, BASE_DIR, '..', 'graphics', 'tilesets', 'coast'),
             'characters': all_character_import(BASE_DIR, '..', 'graphics', 'characters')
+        }
+
+        self.fonts = {
+            'dialog': pygame.font.Font(join(BASE_DIR, '..', 'graphics', 'fonts', 'PixeloidSans.ttf'), 30)
         }
         
     def setup(self, tmx_map, player_start_pos):
@@ -87,7 +93,8 @@ class Game:
                     pos = (obj.x, obj.y), 
                     frames = self.overworld_frames['characters'][obj.properties['graphic']], 
                     groups = (self.all_sprites, self.collision_sprites, self.character_sprites),
-                    facing_direction = obj.properties['direction'])
+                    facing_direction = obj.properties['direction'],
+                    character_data = TRAINER_DATA[obj.properties['character_id']])
 
     def input(self):
         keys = pygame.key.get_just_pressed()
@@ -96,7 +103,10 @@ class Game:
                 if check_connections(100, self.player, character):
                     self.player.block()
                     character.change_facing_direction(self.player.rect.center)
-                    print('dialog')
+                    self.create_dialog(character)
+
+    def create_dialog(self, character):
+        DialogTree(character, self.player, self.all_sprites, self.fonts['dialog'])
 
     def run(self):
         while True:
