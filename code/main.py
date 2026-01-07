@@ -94,6 +94,8 @@ class Game:
         if keys[pygame.K_SPACE]:
             for character in self.character_sprites:
                 if check_connections(100, self.player, character):
+                    self.player.block()
+                    character.change_facing_direction(self.player.rect.center)
                     print('dialog')
 
     def run(self):
