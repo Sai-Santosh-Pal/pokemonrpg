@@ -83,4 +83,9 @@ def coast_importer(cols, rows, *path):
 
 	return new_dict
 
-# print(coast_importer())
+
+
+def check_connections(radius, entity, target, tolerance = 30):
+	relation = vector(target.rect.center) - vector(entity.rect.center)
+	if relation.length() < radius:
+		return True
