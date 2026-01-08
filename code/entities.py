@@ -132,7 +132,6 @@ class Player(Entity):
             input_vector.x += 1
         self.direction = input_vector.normalize() if input_vector else input_vector
 
-
     def move(self, dt):
         self.rect.centerx += self.direction.x * self.speed * dt
         self.hitbox.centerx = self.rect.centerx
