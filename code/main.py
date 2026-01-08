@@ -59,6 +59,9 @@ class Game:
         }
         
     def setup(self, tmx_map, player_start_pos):
+        for group in (self.all_sprites, self.collision_sprites, self.transition_sprites, self.character_sprites):
+            group.empty()
+
         for layer in ['Terrain', 'Terrain Top']:
             for x,y, surf in tmx_map.get_layer_by_name(layer).tiles():
                 Sprite((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites, WORLD_LAYERS['bg'])
@@ -153,7 +156,6 @@ class Game:
         self.tint_progress = max(0, min(self.tint_progress, 255))
         self.tint_surf.set_alpha(self.tint_progress)
         self.display_surface.blit(self.tint_surf, (0,0))
-        print(self.tint_progress)
 
     def run(self):
         while True:
