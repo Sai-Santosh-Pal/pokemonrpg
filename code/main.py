@@ -24,6 +24,13 @@ class Game:
         self.character_sprites = pygame.sprite.Group()
         self.transition_sprites = pygame.sprite.Group()
 
+        self.transition_target = None
+        self.tint_surf = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+        self.tint_mode = 'untint'
+        self.tint_progress = 0
+        self.tint_direction = -1
+        self.tint_speed = 600
+        
         self.import_assets()
         self.setup(self.tmx_maps['world'], 'house')
 
@@ -129,6 +136,15 @@ class Game:
         sprites = [sprite for sprite in self.transition_sprites if sprite.rect.colliderect(self.player.hitbox)]
         if sprites:
             self.player.block()
+            self.transition_target = sprites[0].target
+            self.tint_mode = 'tint'
+
+    def tint_screen(self, dt):
+        if self.tint_mode == 'tint':
+            self.tint_progress += self.tint_speed * dt
+
+        self.tint_surf.set_alpha(self.tint_progress)
+        self.display_surface.blit(self.tint_surf, (0,0))
 
     def run(self):
         while True:
@@ -146,6 +162,7 @@ class Game:
 
             if self.dialog_tree: self.dialog_tree.update()
 
+            self.tint_screen(dt)
             pygame.display.update()
 
 if __name__ == '__main__':
