@@ -22,6 +22,7 @@ class Game:
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
         self.character_sprites = pygame.sprite.Group()
+        self.transition_sprites = pygame.sprite.Group()
 
         self.import_assets()
         self.setup(self.tmx_maps['world'], 'house')
@@ -75,6 +76,9 @@ class Game:
             else:
                 CollidableSprite((obj.x, obj.y), obj.image, (self.all_sprites, self.collision_sprites))
 
+        for obj in tmx_map.get_layer_by_name('Transition'):
+            TransitionSprite((obj.x, obj.y), (obj.width, obj.height), (obj.properties['target'], obj.properties['pos']), self.transition_sprites)
+
         for obj in tmx_map.get_layer_by_name('Collisions'):
             BorderSprite((obj.x, obj.y), pygame.Surface((obj.width, obj.height)), self.collision_sprites)
 
@@ -121,8 +125,14 @@ class Game:
         self.dialog_tree = None
         self.player.unblock()
 
+    def transition_check(self):
+        sprites = [sprite for sprite in self.transition_sprites if sprite.rect.colliderect(self.player.hitbox)]
+        if sprites:
+            self.player.block()
+
     def run(self):
         while True:
+            self.display_surface.fill('black')
             dt = self.clock.tick() / 1000
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -130,8 +140,8 @@ class Game:
                     exit()
 
             self.input()
+            self.transition_check()
             self.all_sprites.update(dt)
-            self.display_surface.fill('black')
             self.all_sprites.draw(self.player)
 
             if self.dialog_tree: self.dialog_tree.update()
