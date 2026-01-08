@@ -140,11 +140,20 @@ class Game:
             self.tint_mode = 'tint'
 
     def tint_screen(self, dt):
+        if self.tint_mode == 'untint':
+            self.tint_progress -= self.tint_speed * dt
+
         if self.tint_mode == 'tint':
             self.tint_progress += self.tint_speed * dt
+            if self.tint_progress >= 255:
+                self.setup(self.tmx_maps[self.transition_target[0]], self.transition_target[1])
+                self.tint_mode = 'untint'
+                self.transition_target = None
 
+        self.tint_progress = max(0, min(self.tint_progress, 255))
         self.tint_surf.set_alpha(self.tint_progress)
         self.display_surface.blit(self.tint_surf, (0,0))
+        print(self.tint_progress)
 
     def run(self):
         while True:
