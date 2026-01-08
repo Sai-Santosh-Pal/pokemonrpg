@@ -111,6 +111,7 @@ class Game:
                         self.player.block()
                         character.change_facing_direction(self.player.rect.center)
                         self.create_dialog(character)
+                        character.can_rotate = False
 
     def create_dialog(self, character):
         if not self.dialog_tree:
@@ -131,7 +132,7 @@ class Game:
             self.input()
             self.all_sprites.update(dt)
             self.display_surface.fill('black')
-            self.all_sprites.draw(self.player.rect.center)
+            self.all_sprites.draw(self.player)
 
             if self.dialog_tree: self.dialog_tree.update()
 
