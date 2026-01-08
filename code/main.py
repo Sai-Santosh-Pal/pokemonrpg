@@ -38,10 +38,7 @@ class Game:
 
     def import_assets(self):
         BASE_DIR = dirname(abspath(__file__))
-        self.tmx_maps = {
-            'world': load_pygame(join(BASE_DIR, '..', 'data', 'maps', 'world.tmx')),
-            'hospital': load_pygame(join(BASE_DIR, '..', 'data', 'maps', 'hospital.tmx')),
-            }
+        self.tmx_maps = tmx_importer(BASE_DIR, '..', 'data', 'maps')
         # print("\n")
         # print("\n")
         # print(BASE_DIR, '..', 'graphics', 'tilesets', 'coast')

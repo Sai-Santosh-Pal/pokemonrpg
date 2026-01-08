@@ -43,10 +43,12 @@
    </properties>
    <point/>
   </object>
-  <object id="12" name="Character" x="286.934" y="374.101">
+  <object id="12" name="Character" x="287.581" y="432.354">
    <properties>
     <property name="character_id" value="Nurse"/>
+    <property name="direction" value="down"/>
     <property name="graphic" value="purple_girl"/>
+    <property name="radius" value="0"/>
    </properties>
    <point/>
   </object>
@@ -54,7 +56,7 @@
  <objectgroup id="6" name="Coast"/>
  <objectgroup id="7" name="Water"/>
  <objectgroup id="8" name="Monsters"/>
- <objectgroup id="9" name="Collisions">
+ <objectgroup id="9" name="Collisions" visible="0">
   <object id="13" x="54.0322" y="141.886" width="395.136" height="302.333"/>
   <object id="14" x="-5.77444" y="712.73" width="154.26" height="64.3437"/>
   <object id="15" x="239.227" y="710.668" width="351.003" height="69.7057"/>
