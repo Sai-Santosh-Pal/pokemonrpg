@@ -5,7 +5,7 @@ from os.path import join
 from os.path import dirname
 from os.path import abspath
 
-from sprites import Sprite, AnimatedSprite, MonsterPatchSprite, BorderSprite, CollidableSprite
+from sprites import Sprite, AnimatedSprite, MonsterPatchSprite, BorderSprite, CollidableSprite, TransitionSprite
 from entities import Player, Character
 from groups import AllSprites
 from dialog import DialogTree
