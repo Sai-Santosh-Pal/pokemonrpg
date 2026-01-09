@@ -89,6 +89,10 @@ class MonsterIndex:
         monster_rect = monster_surf.get_frect(center = top_rect.center)
         self.display_surface.blit(monster_surf, monster_rect)
 
+        name_surf = self.fonts['bold'].render(monster.name, Fasle, COLORS['white'])
+        name_rect = name_surf.get_frect(topleft = top_rect.topleft + vector(10, 10))
+        self.display_surface.blit(name_surf, name_rect)
+
     def update(self, dt):
         self.input()
         self.display_surface.blit(self.tint_surf, (0,0))
