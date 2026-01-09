@@ -27,7 +27,9 @@ class Game:
             2: Monster('Larvea', 3),
             3: Monster('Atrox', 24),
             4: Monster('Sparchu', 24),
-            5: Monster('Gulfin', 24)
+            5: Monster('Gulfin', 24),
+            6: Monster('Jacana', 2),
+            7: Monster('Pouch', 3)
         }
 
         self.all_sprites = AllSprites()

@@ -19,7 +19,12 @@ class MonsterIndex:
         for index, monster in self.monsters.items():
             top = self.main_rect.top + index * self.item_height
             item_rect = pygame.FRect(self.main_rect.left, top, self.list_width, self.item_height)
+
+            text_surf = self.fonts['regular'].render(monster.name, False, COLORS['white'])
+            text_rect = text_surf.get_frect(midleft = item_rect.midleft)
+
             pygame.draw.rect(self.display_surface, 'red', item_rect)
+            self.display_surface.blit(text_surf, text_rect)
 
     def update(self, dt):
         self.display_surface.blit(self.tint_surf, (0,0))
