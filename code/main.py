@@ -48,7 +48,7 @@ class Game:
         self.setup(self.tmx_maps['world'], 'house')
 
         self.dialog_tree = None
-        self.monster_index = MonsterIndex(self.player_monsters, self.fonts)
+        self.monster_index = MonsterIndex(self.player_monsters, self.fonts, self.monster_frames)
         self.index_open = False
 
     def import_assets(self):
@@ -64,6 +64,10 @@ class Game:
             'water': import_folder(BASE_DIR, '..', 'graphics', 'tilesets', 'water'),
             'coast': coast_importer(24, 12, BASE_DIR, '..', 'graphics', 'tilesets', 'coast'),
             'characters': all_character_import(BASE_DIR, '..', 'graphics', 'characters')
+        }
+
+        self.monster_frames = {
+            'icons': import_folder_dict(BASE_DIR, '..', 'graphics', 'icons')
         }
 
         self.fonts = {

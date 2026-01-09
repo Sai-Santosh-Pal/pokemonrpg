@@ -1,10 +1,12 @@
 from settings import *
 
 class MonsterIndex:
-    def __init__(self, monsters, fonts):
+    def __init__(self, monsters, fonts, monster_frames):
         self.display_surface = pygame.display.get_surface()
         self.fonts = fonts
         self.monsters = monsters
+
+        self.icon_frames = monster_frames['icons']
 
         self.tint_surf = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
         self.tint_surf.set_alpha(200)
@@ -21,10 +23,14 @@ class MonsterIndex:
             item_rect = pygame.FRect(self.main_rect.left, top, self.list_width, self.item_height)
 
             text_surf = self.fonts['regular'].render(monster.name, False, COLORS['white'])
-            text_rect = text_surf.get_frect(midleft = item_rect.midleft)
+            text_rect = text_surf.get_frect(midleft = item_rect.midleft + vector(90, 0))
+
+            icon_surf = self.icon_frames[monster.name]
+            icon_rect = icon_surf.get_frect(center = item_rect.midleft + vector(45, 0))
 
             pygame.draw.rect(self.display_surface, 'red', item_rect)
             self.display_surface.blit(text_surf, text_rect)
+            self.display_surface.blit(icon_surf, icon_rect)
 
     def update(self, dt):
         self.display_surface.blit(self.tint_surf, (0,0))
