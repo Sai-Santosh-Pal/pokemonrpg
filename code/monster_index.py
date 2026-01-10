@@ -114,11 +114,25 @@ class MonsterIndex:
             'width': rect.width * 0.45,
             'height': 30,
             'top': top_rect.bottom + rect.width * 0.03,
-            'left_side': rect.left + rect.width / 4
+            'left_side': rect.left + rect.width / 4,
+            'right_side': rect.left + rect.width * 3/4
         }
 
         healthbar_rect = pygame.FRect((0, 0), (bar_data['width'], bar_data['height'])).move_to(midtop = (bar_data['left_side'], bar_data['top']))
-        draw_bar(self.display_surface, healthbar_rect, 25, 100, COLORS['red'], COLORS['black'], 2)
+        draw_bar(self.display_surface, healthbar_rect, monster.health, monster.get_stat('max_health'), COLORS['red'], COLORS['black'], 2)
+        hp_text = self.fonts['regular'].render(f'HP: {int(monster.health)}/{int(monster.get_stat('max_health'))}', False, COLORS['white'])
+        hp_rect = hp_text.get_frect(midleft = healthbar_rect.midleft + vector(10,0))
+        self.display_surface.blit(hp_text, hp_rect)
+
+        energybar_rect = pygame.FRect((0, 0), (bar_data['width'], bar_data['height'])).move_to(midtop = (bar_data['right_side'], bar_data['top']))
+        draw_bar(self.display_surface, energybar_rect, monster.energy, monster.get_stat('max_energy'), COLORS['blue'], COLORS['black'], 2)
+        ep_text = self.fonts['regular'].render(f'EP: {int(monster.energy)}/{int(monster.get_stat('max_energy'))}', False, COLORS['white'])
+        ep_rect = ep_text.get_frect(midleft = energybar_rect.midleft + vector(10,0))
+        self.display_surface.blit(ep_text, ep_rect)
+
+        # sides = {'left': , 'right':}
+
+
 
     def update(self, dt):
         self.input()
