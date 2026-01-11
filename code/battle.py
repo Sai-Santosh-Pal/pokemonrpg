@@ -25,6 +25,7 @@ class Battle:
         if entity == 'player':
             pos = list(BATTLE_POSITIONS['left'].values())[pos_index]
             groups = (self.battle_sprites, self.player_sprites)
+            frames = {state: [pygame.transform.flip(frame, True, False) for frame in frames] for state, frames in frames.items()}
         else:
             pos = list(BATTLE_POSITIONS['right'].values())[pos_index]
             groups = (self.battle_sprites, self.opponent_sprites)
@@ -33,4 +34,5 @@ class Battle:
 
     def update(self, dt):
         self.display_surface.blit(self.bg_surf, (0,0))
+        self.battle_sprites.update(dt)
         self.battle_sprites.draw(self.display_surface)

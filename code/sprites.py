@@ -55,3 +55,10 @@ class MonsterSprite(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = self.frames[self.state][self.frame_index]
         self.rect = self.image.get_frect(center = pos)
+
+    def animate(self, dt):
+        self.frame_index += ANIMATION_SPEED * dt
+        self.image = self.frames[self.state][int(self.frame_index)% len(self.frames[self.state])]
+
+    def update(self, dt):
+        self.animate(dt)
