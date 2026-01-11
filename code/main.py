@@ -10,6 +10,7 @@ from entities import Player, Character
 from groups import AllSprites
 from dialog import DialogTree
 from monster_index import MonsterIndex
+from battle import Battle
 
 from support import *
 from monster import Monster
@@ -32,6 +33,15 @@ class Game:
             7: Monster('Pouch', 3)
         }
 
+        self.dummy_monsters = {
+            0: Monster('Atrox', 12),
+            1: Monster('Sparchu', 15),
+            2: Monster('Gulfin', 19),
+            3: Monster('Jacana', 2),
+            4: Monster('Pouch', 3)
+            
+        }
+
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
         self.character_sprites = pygame.sprite.Group()
@@ -50,6 +60,7 @@ class Game:
         self.dialog_tree = None
         self.monster_index = MonsterIndex(self.player_monsters, self.fonts, self.monster_frames)
         self.index_open = False
+        self.battle = Battle(self.player_monsters, self.dummy_monsters, self.monster_frames, self.bg_frames['forest'], self.fonts)
 
     def import_assets(self):
         BASE_DIR = dirname(abspath(__file__))
@@ -78,6 +89,8 @@ class Game:
             'small': pygame.font.Font(join(BASE_DIR, '..', 'graphics', 'fonts', 'PixeloidSans.ttf'), 14),
             'bold': pygame.font.Font(join(BASE_DIR, '..', 'graphics', 'fonts', 'dogicapixelbold.otf'), 20),
         }
+
+        self.bg_frames = import_folder_dict(BASE_DIR, '..', 'graphics', 'backgrounds')
         
     def setup(self, tmx_map, player_start_pos):
         for group in (self.all_sprites, self.collision_sprites, self.transition_sprites, self.character_sprites):
@@ -197,6 +210,7 @@ class Game:
 
             if self.dialog_tree: self.dialog_tree.update()
             if self.index_open: self.monster_index.update(dt)
+            if self.battle: self.battle.update(dt)
 
             self.tint_screen(dt)
             pygame.display.update()
