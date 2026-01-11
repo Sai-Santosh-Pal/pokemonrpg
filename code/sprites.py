@@ -1,4 +1,5 @@
 from settings import *
+from random import uniform
 
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, pos, surf, groups, z = WORLD_LAYERS['main']):
@@ -51,6 +52,7 @@ class MonsterSprite(pygame.sprite.Sprite):
         self.entity = entity
         self.monster = monster
         self.frame_index, self.frames, self.state = 0, frames, 'idle'
+        self.animation_speed = ANIMATION_SPEED + uniform(-1, 1)
 
         super().__init__(groups)
         self.image = self.frames[self.state][self.frame_index]
@@ -62,3 +64,13 @@ class MonsterSprite(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.animate(dt)
+
+class MonsterNameSprite(pygame.sprite.Sprite):
+    def __init__(self, pos, monster_sprite, groups, font):
+        super().__init__(groups)
+
+        text_surf = font.render(monster_sprite.monster.name, False, COLORS['black'])
+        padding = 20
+
+        self.image = pygame.Surface((text_surf.get_width() + 2 * padding, text_surf.get_height() + 2 * padding))
+        self.rect = self.image.get_frect(midtop = pos)
