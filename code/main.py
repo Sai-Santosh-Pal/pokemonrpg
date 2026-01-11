@@ -39,7 +39,6 @@ class Game:
             2: Monster('Gulfin', 19),
             3: Monster('Jacana', 2),
             4: Monster('Pouch', 3)
-            
         }
 
         self.all_sprites = AllSprites()
@@ -151,7 +150,7 @@ class Game:
                     radius = obj.properties['radius'])
 
     def input(self):
-        if not self.dialog_tree:
+        if not self.dialog_tree and not self.battle:
             keys = pygame.key.get_just_pressed()
             if keys[pygame.K_SPACE]:
                 for character in self.character_sprites:

@@ -43,3 +43,15 @@ class AnimatedSprite(Sprite):
 
     def update(self, dt):
         self.animate(dt)
+
+class MonsterSprite(pygame.sprite.Sprite):
+    def __init__(self, pos, frames, groups, monster, index, pos_index, entity):
+        self.index = index
+        self.pos_index = pos_index
+        self.entity = entity
+        self.monster = monster
+        self.frame_index, self.frames, self.state = 0, frames, 'idle'
+
+        super().__init__(groups)
+        self.image = self.frames[self.state][self.frame_index]
+        self.rect = self.image.get_frect(center = pos)
