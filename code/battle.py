@@ -1,5 +1,5 @@
 from settings import *
-from sprites import MonsterSprite, MonsterNameSprite
+from sprites import MonsterSprite, MonsterNameSprite, MonsterLevelSprite
 
 class Battle:
     def __init__(self, player_monsters, opponent_monsters, monster_frames, bg_surf, fonts):
@@ -33,7 +33,9 @@ class Battle:
         monster_sprite = MonsterSprite(pos, frames, groups, monster, index, pos_index, entity)
 
         name_pos = monster_sprite.rect.midleft + vector(16, -70) if entity == 'player' else monster_sprite.rect.midright + vector(-40, -70)
-        MonsterNameSprite(name_pos, monster_sprite, self.battle_sprites, self.fonts['regular'])
+        name_sprite = MonsterNameSprite(name_pos, monster_sprite, self.battle_sprites, self.fonts['regular'])
+        level_pos = name_sprite.rect.bottomleft if entity == 'player' else name_sprite.rect.bottomright
+        MonsterLevelSprite(entity, level_pos, monster_sprite, self.battle_sprites, self.fonts['small'])
 
     def update(self, dt):
         self.display_surface.blit(self.bg_surf, (0,0))
