@@ -185,8 +185,6 @@ class MonsterIndex:
             pygame.draw.rect(self.display_surface, COLORS[element], rect.inflate(10,10), 0, 4)
             self.display_surface.blit(text_surf, rect)
 
-
-
     def update(self, dt):
         self.input()
         self.display_surface.blit(self.tint_surf, (0,0))

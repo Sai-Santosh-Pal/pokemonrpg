@@ -82,6 +82,9 @@ class MonsterOutlineSprite(pygame.sprite.Sprite):
         self.image = self.frames[self.monster_sprite.state][self.monster_sprite.frame_index]
         self.rect = self.image.get_frect(center = self.monster_sprite.rect.center)
 
+    def update(self, _):
+        self.image = self.frames[self.monster_sprite.state][int(self.monster_sprite.frame_index)% len(self.monster_sprite.frames[self.monster_sprite.state])]
+
 class MonsterNameSprite(pygame.sprite.Sprite):
     def __init__(self, pos, monster_sprite, groups, font):
         super().__init__(groups)
