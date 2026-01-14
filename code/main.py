@@ -82,6 +82,8 @@ class Game:
             'ui': import_folder_dict(BASE_DIR, '..', 'graphics', 'ui')
         }
 
+        self.monster_frames['outlines'] = outline_creator(self.monster_frames['monsters'], 4)
+
         self.fonts = {
             'dialog': pygame.font.Font(join(BASE_DIR, '..', 'graphics', 'fonts', 'PixeloidSans.ttf'), 30),
             'regular': pygame.font.Font(join(BASE_DIR, '..', 'graphics', 'fonts', 'PixeloidSans.ttf'), 18),

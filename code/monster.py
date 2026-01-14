@@ -4,6 +4,7 @@ from random import randint
 class Monster:
     def __init__(self, name, level):
         self.name, self.level = name, level
+        self.paused = False
 
         self.element = MONSTER_DATA[name]['stats']['element']
         self.base_stats = MONSTER_DATA[name]['stats']
@@ -42,3 +43,7 @@ class Monster:
             (self.energy, self.get_stat('max_energy')),
             (self.initiative, 100)
         )
+
+    def update(self, dt):
+        if not self.paused:
+            self.initiative += self.get_stat('speed') * dt
