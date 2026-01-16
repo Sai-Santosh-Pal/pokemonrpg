@@ -67,10 +67,15 @@ class Battle:
                 if self.selection_mode == 'general':
                     if self.indexes['general'] == 0:
                         print('attack')
+
                     if self.indexes['general'] == 1:
-                        print('defense')
+                        self.update_all_monsters('resume')
+                        self.current_monster, self.selection_mode = None, None
+                        self.indexes['general'] = 0
+
                     if self.indexes['general'] == 2:
                         print('switch')
+                        
                     if self.indexes['general'] == 3:
                         print('catch')
 
