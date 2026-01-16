@@ -84,6 +84,10 @@ class Battle:
                     if self.indexes['general'] == 3:
                         print('catch')
 
+            if keys[pygame.K_ESCAPE]:
+                if self.selection_mode in ('attacks', 'switch', 'target'):
+                    self.selection_mode = 'general'
+
     def check_active(self):
         for monster_sprite in self.player_sprites.sprites() + self.opponent_sprites.sprites():
             if monster_sprite.monster.initiative >= 100:
