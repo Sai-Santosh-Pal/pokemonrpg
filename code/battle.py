@@ -1,6 +1,7 @@
 from settings import *
 from sprites import MonsterSprite, MonsterNameSprite, MonsterLevelSprite, MonsterStatsSprite, MonsterOutlineSprite
 from groups import BattleSprites
+from game_data import ATTACK_DATA
 
 class Battle:
     def __init__(self, player_monsters, opponent_monsters, monster_frames, bg_surf, fonts):
@@ -59,10 +60,12 @@ class Battle:
 
             match self.selection_mode:
                 case 'general': limiter = len(BATTLE_CHOICES['full'])
+                case 'attacks': limiter = len(self.current_monster.monster.get_abilities())
+
             if keys[pygame.K_DOWN]:
-                self.indexes[self.selection_mode] = (self.indexes['general'] + 1) % limiter
+                self.indexes[self.selection_mode] = (self.indexes[self.selection_mode] + 1) % limiter
             if keys[pygame.K_UP]:
-                self.indexes[self.selection_mode] = (self.indexes['general'] - 1) % limiter
+                self.indexes[self.selection_mode] = (self.indexes[self.selection_mode] - 1) % limiter
             if keys[pygame.K_SPACE]:
                 if self.selection_mode == 'general':
                     if self.indexes['general'] == 0:
@@ -124,7 +127,11 @@ class Battle:
         for index, ability in enumerate(abilities):
             selected = index == self.indexes['attacks']
 
-            text_color = COLORS['light']
+            if selected:
+                element = ATTACK_DATA[ability]['element']
+                text_color = COLORS[element]
+            else:
+                text_color = COLORS['light']
             text_surf = self.fonts['regular'].render(ability, False, text_color)
 
             text_rect = text_surf.get_frect(center = bg_rect.midtop + vector(0, item_height / 2 + index * item_height + v_offset))
