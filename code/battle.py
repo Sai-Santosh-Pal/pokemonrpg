@@ -124,9 +124,34 @@ class Battle:
     def apply_attack(self, target_sprite, attack, amount):
         AttackSprite(target_sprite.rect.center, self.monster_frames['attacks'][ATTACK_DATA[attack]['animation']], self.battle_sprites)
 
-        print(target_sprite)
-        print(attack)
-        print(amount)
+        attack_element = ATTACK_DATA[attack]['element']
+        target_element = target_sprite.monster.element
+
+        if attack_element == 'fire' and target_element == 'plant' or\
+           attack_element == 'water' and target_element == 'fire' or\
+           attack_element == 'plant' and target_element == 'water':
+            amount *= 2
+
+        if attack_element == 'fire' and target_element == 'water' or\
+           attack_element == 'water' and target_element == 'plant' or\
+           attack_element == 'plant' and target_element == 'fire':
+            amount *= 0.5        
+
+        target_defense = 1 - target_sprite.monster.get_stat('defense') / 2000
+        target_defense = max(0, min(1, target_defense))
+
+        target_sprite.monster.health -= amount * target_defense
+        self.check_death()
+
+        self.update_all_monsters('resume')
+
+    def check_death(self):
+        for monster_sprite in self.opponent_sprites.sprites() + self.player_sprites.sprites():
+            if monster_sprite.monster.health <= 0:
+                if self.player_sprites in monster_sprite.groups():
+                    pass
+                else:
+                    monster_sprite.kill()
 
     def draw_ui(self):
         if self.current_monster:
