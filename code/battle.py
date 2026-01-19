@@ -18,7 +18,9 @@ class Battle:
 
         self.current_monster = None
         self.selection_mode = None
-        self.selection_mode = 'player'
+        self.selected_attack = None
+        self.selection_side = 'player'
+
         self.indexes = {
             'general': 0,
             'monster': 0,
@@ -63,12 +65,24 @@ class Battle:
                 case 'general': limiter = len(BATTLE_CHOICES['full'])
                 case 'attacks': limiter = len(self.current_monster.monster.get_abilities(all = False))
                 case 'switch': limiter = len(self.available_monsters)
+                case 'target': limiter = len(self.opponent_sprites) if self.selection_side == 'opponent' else len(self.player_sprites)
 
             if keys[pygame.K_DOWN]:
                 self.indexes[self.selection_mode] = (self.indexes[self.selection_mode] + 1) % limiter
             if keys[pygame.K_UP]:
                 self.indexes[self.selection_mode] = (self.indexes[self.selection_mode] - 1) % limiter
             if keys[pygame.K_SPACE]:
+                if self.selection_mode == 'target':
+                    sprite_group = self.opponent_sprites if self.selection_side == 'opponent' else self.player_sprites
+                    sprites = {sprite.pos_index: sprite for sprite in sprite_group}
+                    monster_sprite = sprites[list(sprites.keys())[self.indexes['target']]]
+                    print(monster_sprite.monster)
+
+                if self.selection_mode == 'attacks':
+                    self.selection_mode = 'target'
+                    self.selected_attack = self.current_monster.monster.get_abilities(all = False)[self.indexes['attacks']]
+                    self.selection_side = ATTACK_DATA[self.selected_attack]['target']
+
                 if self.selection_mode == 'general':
                     if self.indexes['general'] == 0:
                         self.selection_mode = 'attacks'
@@ -196,5 +210,5 @@ class Battle:
         self.check_active()
 
         self.display_surface.blit(self.bg_surf, (0,0))
-        self.battle_sprites.draw(self.current_monster)
+        self.battle_sprites.draw(self.current_monster, self.selection_side, self.selection_mode, self.indexes['target'], self.player_sprites, self.opponent_sprites)
         self.draw_ui()
