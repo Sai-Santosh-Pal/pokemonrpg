@@ -1,5 +1,5 @@
 from settings import *
-from sprites import MonsterSprite, MonsterNameSprite, MonsterLevelSprite, MonsterStatsSprite, MonsterOutlineSprite
+from sprites import MonsterSprite, MonsterNameSprite, MonsterLevelSprite, MonsterStatsSprite, MonsterOutlineSprite, AttackSprite
 from groups import BattleSprites
 from game_data import ATTACK_DATA
 from support import draw_bar
@@ -48,7 +48,7 @@ class Battle:
             pos = list(BATTLE_POSITIONS['right'].values())[pos_index]
             groups = (self.battle_sprites, self.opponent_sprites)
 
-        monster_sprite = MonsterSprite(pos, frames, groups, monster, index, pos_index, entity)
+        monster_sprite = MonsterSprite(pos, frames, groups, monster, index, pos_index, entity, self.apply_attack)
         MonsterOutlineSprite(monster_sprite, self.battle_sprites, outline_frames)
 
         name_pos = monster_sprite.rect.midleft + vector(16, -70) if entity == 'player' else monster_sprite.rect.midright + vector(-40, -70)
@@ -120,6 +120,13 @@ class Battle:
     def update_all_monsters(self, option):
         for monster_sprite in self.player_sprites.sprites() + self.opponent_sprites.sprites():
             monster_sprite.monster.paused = True if option == 'pause' else False
+
+    def apply_attack(self, target_sprite, attack, amount):
+        AttackSprite(target_sprite.rect.center, self.monster_frames['attacks'][ATTACK_DATA[attack]['animation']], self.battle_sprites)
+
+        print(target_sprite)
+        print(attack)
+        print(amount)
 
     def draw_ui(self):
         if self.current_monster:
@@ -207,7 +214,6 @@ class Battle:
                 energy_rect = pygame.FRect((health_rect.bottomleft + vector(0,2)), (80,4))
                 draw_bar(self.display_surface, health_rect, monster.health, monster.get_stat('max_health'),COLORS['red'], COLORS['black'])
                 draw_bar(self.display_surface, energy_rect, monster.energy, monster.get_stat('max_energy'),COLORS['blue'], COLORS['black'])
-
 
     def update(self, dt):
         self.input()

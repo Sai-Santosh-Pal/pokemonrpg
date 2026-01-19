@@ -90,7 +90,6 @@ def tmx_importer(*path):
 			tmx_dict[file.split('.')[0]] = load_pygame(join(folder_path, file))
 	return tmx_dict
 
-
 def monster_importer(cols, rows, *path):
 	monster_dict = {}
 	for folder_path, sub_folders, image_names in walk(join(*path)):
@@ -124,6 +123,14 @@ def outline_creator(frame_dict, width):
 				new_surf.blit(white_frame, (0,width))
 				outline_frame_dict[monster][state].append(new_surf)
 	return outline_frame_dict
+
+def attack_importer(*path):
+	attack_dict = {}
+	for folder_path, _, image_names in walk(join(*path)):
+		for image in image_names:
+			image_name = image.split('.')[0]
+			attack_dict[image_name] = list(import_tilemap(4, 1, folder_path, image_name).values())
+	return attack_dict
 
 def draw_bar(surface, rect, value, max_value, color, bg_color, radius = 1):
 	ratio = rect.width / max_value
