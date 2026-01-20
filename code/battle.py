@@ -90,7 +90,12 @@ class Battle:
                         self.current_monster.activate_attack(monster_sprite, self.selected_attack)
                         self.selected_attack, self.current_monster, self.selection_mode = None, None, None
                     else:
-                        pass
+                        if monster_sprite.monster.health < monster_sprite.monster.get_stat('max_health') * 0.9:
+                            self.monster_data['player'][len(self.monster_data['player'])] = monster_sprite.monster
+                            monster_sprite.delayed_kill(None)
+                            self.update_all_monsters('resume')
+                        else:
+                            print('cannot')
 
                 if self.selection_mode == 'attacks':
                     self.selection_mode = 'target'
@@ -110,7 +115,10 @@ class Battle:
                         self.selection_mode = 'switch'
                         
                     if self.indexes['general'] == 3:
-                        print('catch')
+                        self.selection_mode = 'target'
+                        self.selection_side = 'opponent'
+
+                self.indexes = {k: 0 for k in self.indexes}
 
             if keys[pygame.K_ESCAPE]:
                 if self.selection_mode in ('attacks', 'switch', 'target'):
@@ -164,11 +172,20 @@ class Battle:
         for monster_sprite in self.opponent_sprites.sprites() + self.player_sprites.sprites():
             if monster_sprite.monster.health <= 0:
                 if self.player_sprites in monster_sprite.groups():
-                    pass
+                    active_monsters = [(monster_sprite.index, monster_sprite.monster) for monster_sprite in self.player_sprites.sprites()]
+                    available_monsters = [(index, monster) for index, monster in self.monster_data['player'].items() if monster.health > 0 and (index, monster) not in active_monsters]
+                    if available_monsters:
+                        new_monster_data = [(monster, index, monster_sprite.pos_index, 'player') for index, monster in available_monsters][0]
+                    else:
+                        new_monster_data = None
                 else:
                     new_monster_data = (list(self.monster_data['opponent'].values())[0], monster_sprite.index, monster_sprite.pos_index, 'opponent') if self.monster_data['opponent'] else None
                     if self.monster_data['opponent']:
                         del self.monster_data['opponent'][min(self.monster_data['opponent'])]
+
+                    xp_amount = monster_sprite.monster.level * 100 / len(self.player_sprites)
+                    for player_sprite in self.player_sprites:
+                        player_sprite.monster.update_xp(xp_amount)
                     
                 monster_sprite.delayed_kill(new_monster_data)
 

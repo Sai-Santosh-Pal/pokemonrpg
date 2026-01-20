@@ -38,7 +38,7 @@ class BattleSprites(pygame.sprite.Group):
     def draw(self, current_monster_sprite, side, mode, target_index, player_sprites, opponent_sprites):
         sprite_group = opponent_sprites if side == 'opponent' else player_sprites
         sprites = {sprite.pos_index: sprite for sprite in sprite_group}
-        monster_sprite = sprites[list(sprites.keys())[target_index]]
+        monster_sprite = sprites[list(sprites.keys())[target_index]] if sprites else None
 
         for sprite in sorted(self, key = lambda sprite: sprite.z):
             if sprite.z == BATTLE_LAYERS['outline']:
