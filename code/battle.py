@@ -1,5 +1,5 @@
 from settings import *
-from sprites import MonsterSprite, MonsterNameSprite, MonsterLevelSprite, MonsterStatsSprite, MonsterOutlineSprite, AttackSprite
+from sprites import MonsterSprite, MonsterNameSprite, MonsterLevelSprite, MonsterStatsSprite, MonsterOutlineSprite, AttackSprite, TimedSprite
 from groups import BattleSprites
 from game_data import ATTACK_DATA
 from support import draw_bar
@@ -95,7 +95,7 @@ class Battle:
                             monster_sprite.delayed_kill(None)
                             self.update_all_monsters('resume')
                         else:
-                            print('cannot')
+                            TimedSprite(monster_sprite.rect.center, self.monster_frames['ui']['cross'], self.battle_sprites, 1000)
 
                 if self.selection_mode == 'attacks':
                     self.selection_mode = 'target'
