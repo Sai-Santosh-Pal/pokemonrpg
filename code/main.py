@@ -181,12 +181,15 @@ class Game:
 
             self.player.unblock()
         elif not character.character_data['defeated']:
-            self.battle = Battle(
+            self.transition_target = Battle(
                 player_monsters = self.player_monsters, 
                 opponent_monsters = character.monsters, 
                 monster_frames = self.monster_frames, 
                 bg_surf = self.bg_frames[character.character_data['biome']], 
-                fonts = self.fonts)
+                fonts = self.fonts,
+                end_battle = self.end_battle,
+                character = character)
+            self.tint_mode = 'tint'
 
     def transition_check(self):
         sprites = [sprite for sprite in self.transition_sprites if sprite.rect.colliderect(self.player.hitbox)]
@@ -202,13 +205,25 @@ class Game:
         if self.tint_mode == 'tint':
             self.tint_progress += self.tint_speed * dt
             if self.tint_progress >= 255:
-                self.setup(self.tmx_maps[self.transition_target[0]], self.transition_target[1])
+                if type(self.transition_target) == Battle:
+                    self.battle = self.transition_target
+                elif self.transition_target == 'level':
+                    self.battle = None
+                else:
+                    self.setup(self.tmx_maps[self.transition_target[0]], self.transition_target[1])
                 self.tint_mode = 'untint'
                 self.transition_target = None
 
         self.tint_progress = max(0, min(self.tint_progress, 255))
         self.tint_surf.set_alpha(self.tint_progress)
         self.display_surface.blit(self.tint_surf, (0,0))
+
+    def end_battle(self, character):
+        self.transition_target = 'level'
+        self.tint_mode = 'tint'
+        if character:
+            character.character_data['defeated'] = True
+            self.create_dialog(character)
 
     def run(self):
         while True:
