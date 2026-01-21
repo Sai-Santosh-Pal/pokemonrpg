@@ -13,6 +13,7 @@ class Battle:
         self.monster_frames = monster_frames
         self.fonts = fonts
         self.monster_data = {'player': player_monsters, 'opponent': opponent_monsters}
+        self.battle_over = False
 
         self.timers = {
             'opponent delay': Timer(600, func = self.opponent_attack)
@@ -205,6 +206,17 @@ class Battle:
         random_target = choice(self.opponent_sprites.sprites()) if ATTACK_DATA[ability]['target'] == 'player' else choice(self.player_sprites.sprites())
         self.current_monster.activate_attack(random_target, ability)
 
+    def check_end_battle(self):
+        if len(self.opponent_sprites) == 0 and not self.battle_over:
+            self.battle_over = True
+            print('battle won')
+            for monster in self.monster_data['player'].values():
+                monster_initiative = 0
+    
+        if len(self.player_sprites) == 0:
+            pygame.quit()
+            exit()
+
     def draw_ui(self):
         if self.current_monster:
             if self.selection_mode == 'general':
@@ -293,6 +305,8 @@ class Battle:
                 draw_bar(self.display_surface, energy_rect, monster.energy, monster.get_stat('max_energy'),COLORS['blue'], COLORS['black'])
 
     def update(self, dt):
+        self.check_end_battle()
+
         self.input()
         self.update_timers()
         self.battle_sprites.update(dt)
