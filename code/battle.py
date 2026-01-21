@@ -114,6 +114,7 @@ class Battle:
                         self.selection_mode = 'attacks'
 
                     if self.indexes['general'] == 1:
+                        self.current_monster.monster.defending = True
                         self.update_all_monsters('resume')
                         self.current_monster, self.selection_mode = None, None
                         self.indexes['general'] = 0
@@ -138,6 +139,7 @@ class Battle:
     def check_active(self):
         for monster_sprite in self.player_sprites.sprites() + self.opponent_sprites.sprites():
             if monster_sprite.monster.initiative >= 100:
+                monster_sprite.monster.defending = False
                 self.update_all_monsters('pause')
                 monster_sprite.monster.initiative = 0
                 monster_sprite.set_highlight(True)
@@ -169,6 +171,8 @@ class Battle:
 
         target_defense = 1 - target_sprite.monster.get_stat('defense') / 2000
         target_defense = max(0, min(1, target_defense))
+        if target_sprite.monster.defending:
+            target_defense -= 0.2
 
         target_sprite.monster.health -= amount * target_defense
         self.check_death()

@@ -12,6 +12,7 @@ class Monster:
         self.energy = self.base_stats['max_energy'] * self.level
         self.initiative = 0
         self.abilities = MONSTER_DATA[name]['abilities']
+        self.defending = False
 
         self.xp = 0
         self.level_up = self.level * 150
