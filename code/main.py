@@ -13,6 +13,7 @@ from dialog import DialogTree
 from monster_index import MonsterIndex
 from battle import Battle
 from timer import Timer
+from evolution import Evolution
 
 from support import *
 from monster import Monster
@@ -28,20 +29,12 @@ class Game:
         self.player_monsters = {
             0: Monster('Charmadillo', 30),
             1: Monster('Friolera', 24),
-            2: Monster('Larvea', 3),
+            2: Monster('Larvea', 4),
             3: Monster('Atrox', 24),
             4: Monster('Sparchu', 24),
             5: Monster('Gulfin', 24),
             6: Monster('Jacana', 2),
             7: Monster('Pouch', 3)
-        }
-
-        self.dummy_monsters = {
-            0: Monster('Atrox', 10),
-            1: Monster('Sparchu', 3),
-            2: Monster('Gulfin', 5),
-            3: Monster('Jacana', 2),
-            4: Monster('Pouch', 3)
         }
 
         self.all_sprites = AllSprites()
@@ -63,8 +56,10 @@ class Game:
         self.dialog_tree = None
         self.monster_index = MonsterIndex(self.player_monsters, self.fonts, self.monster_frames)
         self.index_open = False
-        # self.battle = 
         self.battle = None
+        self.evolution = None
+
+        self.check_evolution()
 
     def import_assets(self):
         BASE_DIR = dirname(abspath(__file__))
@@ -98,6 +93,8 @@ class Game:
         }
 
         self.bg_frames = import_folder_dict(BASE_DIR, '..', 'graphics', 'backgrounds')
+
+        self.start_animation_frames = import_folder(BASE_DIR, '..', 'graphics', 'other', 'star animation')
         
     def setup(self, tmx_map, player_start_pos):
         for group in (self.all_sprites, self.collision_sprites, self.transition_sprites, self.character_sprites):
@@ -230,8 +227,20 @@ class Game:
         if character:
             character.character_data['defeated'] = True
             self.create_dialog(character)
-        else:
+        elif not self.evolution:
             self.player.unblock()
+            self.check_evolution()
+
+    def check_evolution(self):
+        for index, monster in self.player_monsters.items():
+            if monster.evolution:
+                if monster.level == monster.evolution[1]:
+                    self.player.block()
+                    self.evolution = Evolution(self.monster_frames['monsters'], monster.name, monster.evolution[0], self.fonts['bold'], self.end_evolution, self.start_animation_frames)
+
+    def end_evolution(self):
+        self.evolution = None
+        self.player.unblock()
 
     def check_monsters(self):
         if [sprite for sprite in self.monster_sprites if sprite.rect.colliderect(self.player.hitbox)] and not self.battle and self.player.direction:
@@ -273,6 +282,7 @@ class Game:
             if self.dialog_tree: self.dialog_tree.update()
             if self.index_open: self.monster_index.update(dt)
             if self.battle: self.battle.update(dt)
+            if self.evolution: self.evolution.update(dt)
 
             self.tint_screen(dt)
             pygame.display.update()
