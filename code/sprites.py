@@ -36,7 +36,7 @@ class MonsterPatchSprite(Sprite):
         self.y_sort -= 40
         self.biome = biome
         self.monsters = monsters.split(',')
-        self.level = levelprint(self.biome, self.monsters, self.level)
+        self.level = level
 
 class AnimatedSprite(Sprite):
     def __init__(self, pos, frames, groups, z = WORLD_LAYERS['main']):

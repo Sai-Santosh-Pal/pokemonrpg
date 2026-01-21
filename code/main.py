@@ -4,6 +4,7 @@ from pytmx.util_pygame import load_pygame
 from os.path import join
 from os.path import dirname
 from os.path import abspath
+from random import randint
 
 from sprites import Sprite, AnimatedSprite, MonsterPatchSprite, BorderSprite, CollidableSprite, TransitionSprite
 from entities import Player, Character
@@ -229,6 +230,8 @@ class Game:
         if character:
             character.character_data['defeated'] = True
             self.create_dialog(character)
+        else:
+            self.player.unblock()
 
     def check_monsters(self):
         if [sprite for sprite in self.monster_sprites if sprite.rect.colliderect(self.player.hitbox)] and not self.battle and self.player.direction:
@@ -238,15 +241,17 @@ class Game:
     def monster_encounter(self):
         sprites = [sprite for sprite in self.monster_sprites if sprite.rect.colliderect(self.player.hitbox)]
         if sprites and self.player.direction:
-            self.player_block()
+            self.encounter_timer.duration = randint(800, 2500)
+            self.player.block()
             self.transition_target = Battle(
                 player_monsters = self.player_monsters, 
-                opponent_monsters = character.monsters, 
+                opponent_monsters = {index:Monster(monster, sprites[0].level + randint(-3,3)) for index, monster in enumerate(sprites[0].monsters)}, 
                 monster_frames = self.monster_frames, 
-                bg_surf = self.bg_frames[character.character_data['biome']], 
+                bg_surf = self.bg_frames[sprites[0].biome], 
                 fonts = self.fonts,
                 end_battle = self.end_battle,
-                character = character)
+                character = None)
+            self.tint_mode = 'tint'
 
     def run(self):
         while True:
