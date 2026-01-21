@@ -11,6 +11,7 @@ from groups import AllSprites
 from dialog import DialogTree
 from monster_index import MonsterIndex
 from battle import Battle
+from timer import Timer
 
 from support import *
 from monster import Monster
@@ -21,6 +22,7 @@ class Game:
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption('PokemonRPG')
         self.clock = pygame.time.Clock()
+        self.encounter_timer = Timer(2000, func = self.monster_encounter)
 
         self.player_monsters = {
             0: Monster('Charmadillo', 30),
@@ -45,6 +47,7 @@ class Game:
         self.collision_sprites = pygame.sprite.Group()
         self.character_sprites = pygame.sprite.Group()
         self.transition_sprites = pygame.sprite.Group()
+        self.monster_sprites = pygame.sprite.Group()
 
         self.transition_target = None
         self.tint_surf = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -130,7 +133,7 @@ class Game:
             BorderSprite((obj.x, obj.y), pygame.Surface((obj.width, obj.height)), self.collision_sprites)
 
         for obj in tmx_map.get_layer_by_name('Monsters'):
-            MonsterPatchSprite((obj.x, obj.y), obj.image, self.all_sprites, obj.properties['biome'])
+            MonsterPatchSprite((obj.x, obj.y), obj.image, (self.all_sprites, self.monster_sprites), obj.properties['biome'])
         
         for obj in tmx_map.get_layer_by_name("Entities"):
             if obj.name == "Player":
@@ -190,6 +193,8 @@ class Game:
                 end_battle = self.end_battle,
                 character = character)
             self.tint_mode = 'tint'
+        else:
+            self.player.unblock()
 
     def transition_check(self):
         sprites = [sprite for sprite in self.transition_sprites if sprite.rect.colliderect(self.player.hitbox)]
@@ -225,19 +230,30 @@ class Game:
             character.character_data['defeated'] = True
             self.create_dialog(character)
 
+    def check_monsters(self):
+        if [sprite for sprite in self.monster_sprites if sprite.rect.colliderect(self.player.hitbox)] and not self.battle and self.player.direction:
+            if not self.encounter_timer.active:
+                self.encounter_timer.activate()
+
+    def monster_encounter(self):
+        print('monster encounter')
+
     def run(self):
         while True:
-            self.display_surface.fill('black')
             dt = self.clock.tick() / 1000
+            self.display_surface.fill('black')
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.exit()
                     exit()
 
+            self.encounter_timer.update()
             self.input()
             self.transition_check()
             self.all_sprites.update(dt)
             self.all_sprites.draw(self.player)
+            self.check_monsters()
 
             if self.dialog_tree: self.dialog_tree.update()
             if self.index_open: self.monster_index.update(dt)
