@@ -133,7 +133,7 @@ class Game:
             BorderSprite((obj.x, obj.y), pygame.Surface((obj.width, obj.height)), self.collision_sprites)
 
         for obj in tmx_map.get_layer_by_name('Monsters'):
-            MonsterPatchSprite((obj.x, obj.y), obj.image, (self.all_sprites, self.monster_sprites), obj.properties['biome'])
+            MonsterPatchSprite((obj.x, obj.y), obj.image, (self.all_sprites, self.monster_sprites), obj.properties['biome'], obj.properties['monsters'], obj.properties['level'])
         
         for obj in tmx_map.get_layer_by_name("Entities"):
             if obj.name == "Player":
@@ -236,7 +236,17 @@ class Game:
                 self.encounter_timer.activate()
 
     def monster_encounter(self):
-        print('monster encounter')
+        sprites = [sprite for sprite in self.monster_sprites if sprite.rect.colliderect(self.player.hitbox)]
+        if sprites and self.player.direction:
+            self.player_block()
+            self.transition_target = Battle(
+                player_monsters = self.player_monsters, 
+                opponent_monsters = character.monsters, 
+                monster_frames = self.monster_frames, 
+                bg_surf = self.bg_frames[character.character_data['biome']], 
+                fonts = self.fonts,
+                end_battle = self.end_battle,
+                character = character)
 
     def run(self):
         while True:
