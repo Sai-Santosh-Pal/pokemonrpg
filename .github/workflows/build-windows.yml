@@ -1,0 +1,68 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ master, production ]
+  pull_request:
+    branches: [ master, production ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    strategy:
+      matrix:
+        python-version: ['3.11']
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Build executable with PyInstaller
+      run: |
+        pyinstaller --onefile --windowed --name="PokemonRPG" --icon=graphics/icons/pokeball.png --add-data "data:data" --add-data "graphics:graphics" --add-data "audio:audio" code/main.py
+    
+    - name: List build output
+      run: |
+        ls -la dist/
+        dir dist\
+    
+    - name: Upload Windows executable
+      uses: actions/upload-artifact@v4
+      with:
+        name: PokemonRPG-Windows
+        path: dist/PokemonRPG.exe
+        if-no-files-found: error
+    
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: Release ${{ github.ref_name }}
+        body: Pokemon RPG - Windows Build
+        draft: false
+        prerelease: false
+    
+    - name: Upload Release Asset
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/PokemonRPG.exe
+        asset_name: PokemonRPG.exe
+        asset_content_type: application/octet-stream
