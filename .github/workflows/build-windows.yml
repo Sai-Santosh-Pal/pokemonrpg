@@ -30,7 +30,7 @@ jobs:
     
     - name: Build executable with PyInstaller
       run: |
-        pyinstaller --onefile --windowed --name="PokemonRPG" --icon=graphics/icons/pokeball.png --add-data "data:data" --add-data "graphics:graphics" --add-data "audio:audio" code/main.py
+        pyinstaller --onefile --windowed --name="PokemonRPG" --add-data "data:data" --add-data "graphics:graphics" --add-data "audio:audio" code/main.py
     
     - name: List build output
       run: |
