@@ -1,11 +1,21 @@
+import sys
+import os
+from os.path import join, dirname, abspath
+from random import randint
+
+# Add the code directory to the Python path so modules can be imported
+CODE_DIR = dirname(abspath(__file__))
+WORKSPACE_ROOT = dirname(CODE_DIR)
+
+if CODE_DIR not in sys.path:
+    sys.path.insert(0, CODE_DIR)
+
+# Change working directory to workspace root for asset loading
+os.chdir(WORKSPACE_ROOT)
+
 from settings import *
 from game_data import *
 from pytmx.util_pygame import load_pygame
-from os.path import join
-from os.path import dirname
-from os.path import abspath
-from random import randint
-
 from sprites import Sprite, AnimatedSprite, MonsterPatchSprite, BorderSprite, CollidableSprite, TransitionSprite
 from entities import Player, Character
 from groups import AllSprites
@@ -14,7 +24,6 @@ from monster_index import MonsterIndex
 from battle import Battle
 from timer import Timer
 from evolution import Evolution
-
 from support import *
 from monster import Monster
 
@@ -57,8 +66,9 @@ class Game:
         self.evolution = None
 
     def import_assets(self):
-        BASE_DIR = dirname(abspath(__file__))
-        self.tmx_maps = tmx_importer(BASE_DIR, '..', 'data', 'maps')
+        # Get the workspace root directory (parent of code directory)
+        BASE_DIR = dirname(dirname(abspath(__file__)))
+        self.tmx_maps = tmx_importer(BASE_DIR, 'data', 'maps')
         # print("\n")
         # print("\n")
         # print(BASE_DIR, '..', 'graphics', 'tilesets', 'coast')
@@ -66,32 +76,32 @@ class Game:
         # print("\n")
 
         self.overworld_frames = {
-            'water': import_folder(BASE_DIR, '..', 'graphics', 'tilesets', 'water'),
-            'coast': coast_importer(24, 12, BASE_DIR, '..', 'graphics', 'tilesets', 'coast'),
-            'characters': all_character_import(BASE_DIR, '..', 'graphics', 'characters')
+            'water': import_folder(BASE_DIR, 'graphics', 'tilesets', 'water'),
+            'coast': coast_importer(24, 12, BASE_DIR, 'graphics', 'tilesets', 'coast'),
+            'characters': all_character_import(BASE_DIR, 'graphics', 'characters')
         }
 
         self.monster_frames = {
-            'icons': import_folder_dict(BASE_DIR, '..', 'graphics', 'icons'),
-            'monsters': monster_importer(4, 2, BASE_DIR, '..', 'graphics', 'monsters'),
-            'ui': import_folder_dict(BASE_DIR, '..', 'graphics', 'ui'),
-            'attacks': attack_importer(BASE_DIR, '..', 'graphics', 'attacks')
+            'icons': import_folder_dict(BASE_DIR, 'graphics', 'icons'),
+            'monsters': monster_importer(4, 2, BASE_DIR, 'graphics', 'monsters'),
+            'ui': import_folder_dict(BASE_DIR, 'graphics', 'ui'),
+            'attacks': attack_importer(BASE_DIR, 'graphics', 'attacks')
         }
 
         self.monster_frames['outlines'] = outline_creator(self.monster_frames['monsters'], 4)
 
         self.fonts = {
-            'dialog': pygame.font.Font(join(BASE_DIR, '..', 'graphics', 'fonts', 'PixeloidSans.ttf'), 30),
-            'regular': pygame.font.Font(join(BASE_DIR, '..', 'graphics', 'fonts', 'PixeloidSans.ttf'), 18),
-            'small': pygame.font.Font(join(BASE_DIR, '..', 'graphics', 'fonts', 'PixeloidSans.ttf'), 14),
-            'bold': pygame.font.Font(join(BASE_DIR, '..', 'graphics', 'fonts', 'dogicapixelbold.otf'), 20),
+            'dialog': pygame.font.Font(join(BASE_DIR, 'graphics', 'fonts', 'PixeloidSans.ttf'), 30),
+            'regular': pygame.font.Font(join(BASE_DIR, 'graphics', 'fonts', 'PixeloidSans.ttf'), 18),
+            'small': pygame.font.Font(join(BASE_DIR, 'graphics', 'fonts', 'PixeloidSans.ttf'), 14),
+            'bold': pygame.font.Font(join(BASE_DIR, 'graphics', 'fonts', 'dogicapixelbold.otf'), 20),
         }
 
-        self.bg_frames = import_folder_dict(BASE_DIR, '..', 'graphics', 'backgrounds')
+        self.bg_frames = import_folder_dict(BASE_DIR, 'graphics', 'backgrounds')
 
-        self.start_animation_frames = import_folder(BASE_DIR, '..', 'graphics', 'other', 'star animation')
+        self.start_animation_frames = import_folder(BASE_DIR, 'graphics', 'other', 'star animation')
 
-        self.audio = audio_importer(BASE_DIR, '..', 'audio')
+        self.audio = audio_importer(BASE_DIR, 'audio')
         
     def setup(self, tmx_map, player_start_pos):
         for group in (self.all_sprites, self.collision_sprites, self.transition_sprites, self.character_sprites):
