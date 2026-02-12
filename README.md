@@ -39,3 +39,18 @@
 - Evolve monsters at higher levels.
 - Defeat trainers and gym leaders to progress.
 
+## Credits
+Artwork by Scarloxy: https://scarloxy.itch.io/mpwsp01
+
+Sound assets were sourced from multiple libraries:
+Fire attack — https://opengameart.org/content/spell-4-fire
+Slash attack — https://opengameart.org/content/knife-sharpening-slice-2
+Crack effects — https://opengameart.org/content/5-break-crunch-impacts
+Overworld theme — https://opengameart.org/content/nes-overworld-theme
+Notice effect — https://opengameart.org/content/10-8bit-coin-sounds
+Battle theme — https://opengameart.org/content/boss-battle-1-8-bit-re-upload
+
+Trailer audio tracks came from:
+https://opengameart.org/content/porkymon-battle-theme
+https://opengameart.org/content/face-the-facts
+https://opengameart.org/content/jay-the-doggo-music
