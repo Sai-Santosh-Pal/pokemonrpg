@@ -3,9 +3,15 @@ import os
 from os.path import join, dirname, abspath
 from random import randint
 
-# Add the code directory to the Python path so modules can be imported
-CODE_DIR = dirname(abspath(__file__))
-WORKSPACE_ROOT = dirname(CODE_DIR)
+# Detect if running as a PyInstaller bundle
+if getattr(sys, 'frozen', False):
+    # Running as a PyInstaller bundle
+    WORKSPACE_ROOT = sys._MEIPASS
+    CODE_DIR = join(WORKSPACE_ROOT, 'code')
+else:
+    # Running as a regular Python script
+    CODE_DIR = dirname(abspath(__file__))
+    WORKSPACE_ROOT = dirname(CODE_DIR)
 
 if CODE_DIR not in sys.path:
     sys.path.insert(0, CODE_DIR)
