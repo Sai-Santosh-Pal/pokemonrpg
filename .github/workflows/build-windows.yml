@@ -34,7 +34,7 @@ jobs:
     
     - name: Build executable with PyInstaller
       run: |
-        pyinstaller code/main.py --onedir --noconfirm --clean `
+        pyinstaller -m code.main --onedir --noconfirm --clean `
         --collect-submodules code `
         --collect-all pygame `
         --collect-all pytmx `

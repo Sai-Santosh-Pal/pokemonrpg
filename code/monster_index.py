@@ -1,6 +1,6 @@
-from settings import *
-from support import draw_bar
-from game_data import MONSTER_DATA, ATTACK_DATA
+from code.settings import *
+from code.support import draw_bar
+from code.game_data import MONSTER_DATA, ATTACK_DATA
 
 class MonsterIndex:
     def __init__(self, monsters, fonts, monster_frames):

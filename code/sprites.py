@@ -1,7 +1,7 @@
-from settings import *
+from code.settings import *
 from random import uniform
-from support import draw_bar
-from timer import Timer
+from code.support import draw_bar
+from code.timer import Timer
 
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, pos, surf, groups, z = WORLD_LAYERS['main']):

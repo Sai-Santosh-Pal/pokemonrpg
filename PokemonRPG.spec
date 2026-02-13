@@ -2,9 +2,10 @@
 #
 # PyInstaller spec file for Pokemon RPG
 # This file controls how PyInstaller builds the Windows executable
+from PyInstaller.utils.hooks import collect_submodules, collect_all
 
 a = Analysis(
-    ['code/main.py'],
+    [],
     pathex=[],
     binaries=[],
     datas=[
@@ -16,14 +17,13 @@ a = Analysis(
         'pygame',
         'pytmx',
         'pytmx.util_pygame',
-        'os',
-        'sys',
-    ],
+    ] + collect_submodules('code'),
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludedimports=[],
     noarchive=False,
+    module_search_locations=['code'],
 )
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=None)

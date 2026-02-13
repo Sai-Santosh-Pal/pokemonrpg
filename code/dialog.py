@@ -1,5 +1,5 @@
-from settings import * 
-from timer import Timer
+from code.settings import * 
+from code.timer import Timer
 
 class DialogTree:
     def __init__(self, character, player, all_sprites, font, end_dialog):

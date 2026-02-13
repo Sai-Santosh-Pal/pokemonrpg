@@ -1,4 +1,4 @@
-from game_data import MONSTER_DATA, ATTACK_DATA
+from code.game_data import MONSTER_DATA, ATTACK_DATA
 from random import randint
 
 class Monster:

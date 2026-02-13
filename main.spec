@@ -13,7 +13,7 @@ datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
 
 a = Analysis(
-    ['code/main.py'],
+    [],
     pathex=[],
     binaries=binaries,
     datas=datas,
@@ -23,6 +23,7 @@ a = Analysis(
     runtime_hooks=[],
     excludes=[],
     noarchive=False,
+    module_search_locations=['code'],
 )
 pyz = PYZ(a.pure)
 

@@ -1,5 +1,5 @@
-from settings import *
-from timer import Timer
+from code.settings import *
+from code.timer import Timer
 
 class Evolution:
     def __init__(self, frames, start_monster, end_monster, font, end_evolution, star_frames):
