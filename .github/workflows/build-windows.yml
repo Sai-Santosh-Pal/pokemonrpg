@@ -34,12 +34,12 @@ jobs:
     
     - name: Build executable with PyInstaller
       run: |
-        pyinstaller code/main.py --onedir --noconfirm --clean ^
-        --collect-submodules code ^
-        --collect-all pygame ^
-        --collect-all pytmx ^
-        --add-data "audio;audio" ^
-        --add-data "graphics;graphics" ^
+        pyinstaller code/main.py --onedir --noconfirm --clean `
+        --collect-submodules code `
+        --collect-all pygame `
+        --collect-all pytmx `
+        --add-data "audio;audio" `
+        --add-data "graphics;graphics" `
         --add-data "data;data"
     
     - name: List build output
