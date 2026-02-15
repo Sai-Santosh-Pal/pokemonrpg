@@ -1,9 +1,9 @@
-from code.settings import *
-from code.sprites import MonsterSprite, MonsterNameSprite, MonsterLevelSprite, MonsterStatsSprite, MonsterOutlineSprite, AttackSprite, TimedSprite
-from code.groups import BattleSprites
-from code.game_data import ATTACK_DATA
-from code.support import draw_bar
-from code.timer import Timer
+from settings import *
+from sprites import MonsterSprite, MonsterNameSprite, MonsterLevelSprite, MonsterStatsSprite, MonsterOutlineSprite, AttackSprite, TimedSprite
+from groups import BattleSprites
+from game_data import ATTACK_DATA
+from support import draw_bar
+from timer import Timer
 from random import choice
 
 class Battle:

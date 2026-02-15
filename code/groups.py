@@ -1,8 +1,8 @@
-from code.settings import *
-from code.support import import_image
+from settings import *
+from support import import_image
 from os.path import dirname
 from os.path import abspath
-from code.entities import Entity
+from entities import Entity
 
 class AllSprites(pygame.sprite.Group):
     def __init__(self):

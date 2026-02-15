@@ -1,8 +1,8 @@
-from code.settings import *
-from code.support import check_connections 
-from code.timer import Timer
+from settings import *
+from support import check_connections 
+from timer import Timer
 from random import choice
-from code.monster import Monster
+from monster import Monster
 
 class Entity(pygame.sprite.Sprite):
     def __init__(self, pos, frames, groups, facing_direction):

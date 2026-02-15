@@ -19,19 +19,19 @@ if CODE_DIR not in sys.path:
 # Change working directory to workspace root for asset loading
 os.chdir(WORKSPACE_ROOT)
 
-from code.settings import *
-from code.game_data import *
+from settings import *
+from game_data import *
 from pytmx.util_pygame import load_pygame
-from code.sprites import Sprite, AnimatedSprite, MonsterPatchSprite, BorderSprite, CollidableSprite, TransitionSprite
-from code.entities import Player, Character
-from code.groups import AllSprites
-from code.dialog import DialogTree
-from code.monster_index import MonsterIndex
-from code.battle import Battle
-from code.timer import Timer
-from code.evolution import Evolution
-from code.support import *
-from code.monster import Monster
+from sprites import Sprite, AnimatedSprite, MonsterPatchSprite, BorderSprite, CollidableSprite, TransitionSprite
+from entities import Player, Character
+from groups import AllSprites
+from dialog import DialogTree
+from monster_index import MonsterIndex
+from battle import Battle
+from timer import Timer
+from evolution import Evolution
+from support import *
+from monster import Monster
 
 class Game:
     def __init__(self):
