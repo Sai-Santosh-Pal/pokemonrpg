@@ -1,12 +1,10 @@
 name: Build Windows Executable
 
-# NOTE: The code/main.py includes _MEIPASS-aware path resolution
-# to handle asset loading in packaged executables.
-# Without this, bundled asset folders will not load correctly.
-
 on:
   push:
     branches: [ master, production ]
+    tags:
+      - 'v*'
   pull_request:
     branches: [ master, production ]
   workflow_dispatch:
@@ -35,31 +33,46 @@ jobs:
     - name: Build executable with PyInstaller
       run: |
         pyinstaller main.spec --noconfirm --clean
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     
     - name: List build output
       run: |
+        echo "Build directory contents:"
         dir dist\
-        Get-ChildItem -Recurse dist\ | Select-Object -First 50
+        echo "`nRecursive dist contents:"
+        Get-ChildItem -Recurse dist\ | Format-Table -Property FullName
     
-    - name: Create Release Archive
+    - name: Prepare release files
       if: startsWith(github.ref, 'refs/tags/')
       run: |
-        Compress-Archive -Path dist/main -DestinationPath PokemonRPG-Windows.zip
+        echo "Creating release package..."
+        if (Test-Path dist/PokemonRPG) {
+          Compress-Archive -Path dist/PokemonRPG -DestinationPath PokemonRPG-Windows.zip -Force
+        } else {
+          echo "ERROR: Build output not found at dist/PokemonRPG"
+          Get-ChildItem -Recurse dist\
+          exit 1
+        }
         dir PokemonRPG-Windows.zip
     
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/')
-      uses: ncipollo/release-action@v1
+      uses: softprops/action-gh-release@v1
       with:
-        tag: ${{ github.ref_name }}
-        name: Release ${{ github.ref_name }}
+        files: PokemonRPG-Windows.zip
         body: |
-          Pokemon RPG - Windows Build
+          # Pokemon RPG - Release ${{ github.ref_name }}
           
           ## Release Contents
-          - Compiled Windows executable
-          - All game assets (graphics, audio, data)
-          - Ready to play!
+          - ✅ Compiled Windows executable
+          - ✅ All game assets (graphics, audio, data)
+          - ✅ Ready to play!
+          
+          ### How to Play
+          1. Download the ZIP file
+          2. Extract it
+          3. Run `PokemonRPG.exe`
         draft: false
         prerelease: false
-        artifacts: PokemonRPG-Windows.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
