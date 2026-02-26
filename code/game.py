@@ -1,5 +1,6 @@
 import sys
 import os
+import asyncio
 from os.path import join, dirname, abspath
 from random import randint
 
@@ -290,15 +291,15 @@ class Game:
                 sounds = self.audio)
             self.tint_mode = 'tint'
 
-    def run(self):
+    async def run(self):
         while True:
             dt = self.clock.tick() / 1000
             self.display_surface.fill('black')
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.exit()
-                    exit()
+                    pygame.quit()
+                    return
 
             self.encounter_timer.update()
             self.input()
@@ -314,8 +315,9 @@ class Game:
 
             self.tint_screen(dt)
             pygame.display.update()
+            await asyncio.sleep(0)
 
 if __name__ == '__main__':
     game = Game()
-    game.run()
+    asyncio.run(game.run())
 

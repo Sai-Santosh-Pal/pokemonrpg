@@ -65,8 +65,66 @@ jobs:
           name: ${{ matrix.artifact }}
           path: dist/${{ matrix.exe }}
 
+  build-web:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pygbag
+
+      - name: Prepare web build
+        run: |
+          # Create web build folder with pygbag-compatible structure
+          mkdir -p web_build
+          cp main.py web_build/main.py
+          cp -r code web_build/code
+          cp -r data web_build/data
+          cp -r graphics web_build/graphics
+          cp -r audio web_build/audio
+          rm -f web_build/code/__init__.py
+
+          # Copy pytmx source into web build (pure Python, needed at runtime)
+          PYTMX_DIR=$(python -c "import pytmx; import os; print(os.path.dirname(pytmx.__file__))")
+          cp -r "$PYTMX_DIR" web_build/pytmx
+
+      - name: Convert audio to OGG format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          cd web_build/audio
+          for f in *.wav *.mp3; do
+            [ -f "$f" ] || continue
+            name="${f%.*}"
+            # Skip if OGG version already exists
+            if [ ! -f "${name}.ogg" ]; then
+              ffmpeg -i "$f" "${name}.ogg" -y -loglevel error
+            fi
+            rm "$f"
+          done
+
+      - name: Build web package
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: pygbag --build --archive web_build
+
+      - name: Upload web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PokemonRPG-Web
+          path: web_build/build/web.zip
+
   release:
-    needs: build
+    needs: [build, build-web]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
@@ -85,10 +143,17 @@ jobs:
           name: PokemonRPG-Linux-arm64
           path: linux-arm64
 
+      - name: Download Web artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: PokemonRPG-Web
+          path: web
+
       - name: Package releases
         run: |
           (cd windows && zip ../PokemonRPG-Windows.zip PokemonRPG.exe)
           (cd linux-arm64 && chmod +x PokemonRPG && tar czf ../PokemonRPG-Linux-arm64.tar.gz PokemonRPG)
+          cp web/web.zip PokemonRPG-Web.zip
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -96,11 +161,13 @@ jobs:
           files: |
             PokemonRPG-Windows.zip
             PokemonRPG-Linux-arm64.tar.gz
+            PokemonRPG-Web.zip
           body: |
             # Pokemon RPG - ${{ github.ref_name }}
 
             ## Downloads
             - **Windows**: Download `PokemonRPG-Windows.zip`, extract, and run `PokemonRPG.exe`
             - **Linux ARM64**: Download `PokemonRPG-Linux-arm64.tar.gz`, extract, and run `./PokemonRPG`
+            - **Web (itch.io)**: Upload `PokemonRPG-Web.zip` to itch.io as an HTML game
           draft: false
           prerelease: false

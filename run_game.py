@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-PokemonRPG - Main entry point
-This script can be run from the workspace root directory to start the game.
+PokemonRPG - Desktop entry point (used by PyInstaller)
 """
 
 import sys
 import os
+import asyncio
 from os.path import join, dirname, abspath
 
 # Detect if running as a PyInstaller bundle
@@ -22,7 +22,7 @@ if CODE_DIR not in sys.path:
 os.chdir(WORKSPACE_ROOT)
 
 # Now import and run the game
-from main import Game
+from game import Game
 
 game = Game()
-game.run()
+asyncio.run(game.run())
