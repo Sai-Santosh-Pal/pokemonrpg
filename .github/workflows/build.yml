@@ -1,0 +1,103 @@
+name: Build Game
+
+on:
+  push:
+    branches: [master, production]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [master, production]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: PokemonRPG-Windows
+            exe: PokemonRPG.exe
+          - os: ubuntu-24.04-arm
+            artifact: PokemonRPG-Linux-arm64
+            exe: PokemonRPG
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build executable
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: pyinstaller main.spec --noconfirm --clean
+
+      - name: Verify build output
+        shell: bash
+        run: |
+          echo "Build output:"
+          ls -lh dist/
+          test -f "dist/${{ matrix.exe }}" || { echo "ERROR: dist/${{ matrix.exe }} not found"; exit 1; }
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.exe }}
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: PokemonRPG-Windows
+          path: windows
+
+      - name: Download Linux ARM64 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: PokemonRPG-Linux-arm64
+          path: linux-arm64
+
+      - name: Package releases
+        run: |
+          (cd windows && zip ../PokemonRPG-Windows.zip PokemonRPG.exe)
+          (cd linux-arm64 && chmod +x PokemonRPG && tar czf ../PokemonRPG-Linux-arm64.tar.gz PokemonRPG)
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            PokemonRPG-Windows.zip
+            PokemonRPG-Linux-arm64.tar.gz
+          body: |
+            # Pokemon RPG - ${{ github.ref_name }}
+
+            ## Downloads
+            - **Windows**: Download `PokemonRPG-Windows.zip`, extract, and run `PokemonRPG.exe`
+            - **Linux ARM64**: Download `PokemonRPG-Linux-arm64.tar.gz`, extract, and run `./PokemonRPG`
+          draft: false
+          prerelease: false
