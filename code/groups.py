@@ -1,17 +1,21 @@
 from settings import *
 from support import import_image
-from os.path import dirname
-from os.path import abspath
+from os.path import dirname, abspath
 from entities import Entity
+import sys
+
+if getattr(sys, 'frozen', False):
+    _PROJECT_ROOT = sys._MEIPASS
+else:
+    _PROJECT_ROOT = dirname(dirname(abspath(__file__)))
 
 class AllSprites(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
-        BASE_DIR = dirname(abspath(__file__))
         self.display_surface = pygame.display.get_surface()
         self.offset = vector()
-        self.shadow_surf = import_image(BASE_DIR, '..', 'graphics', 'other', 'shadow')
-        self.notice_surf = import_image(BASE_DIR, '..', 'graphics', 'ui', 'notice')
+        self.shadow_surf = import_image(_PROJECT_ROOT, 'graphics', 'other', 'shadow')
+        self.notice_surf = import_image(_PROJECT_ROOT, 'graphics', 'ui', 'notice')
 
     def draw(self, player):
         self.offset.x = -(player.rect.centerx - WINDOW_WIDTH / 2)

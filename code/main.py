@@ -72,8 +72,7 @@ class Game:
         self.evolution = None
 
     def import_assets(self):
-        # Get the workspace root directory (parent of code directory)
-        BASE_DIR = dirname(dirname(abspath(__file__)))
+        BASE_DIR = WORKSPACE_ROOT
         self.tmx_maps = tmx_importer(BASE_DIR, 'data', 'maps')
         # print("\n")
         # print("\n")
