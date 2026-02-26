@@ -25,10 +25,6 @@ hiddenimports = [
     'support',
     'monster',
     'debug',
-    'jaraco',
-    'jaraco.text',
-    'jaraco.functools',
-    'jaraco.context',
 ]
 
 # Collect pygame and pytmx
@@ -51,7 +47,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['matplotlib', 'numpy', 'scipy'],
+    excludes=['matplotlib', 'numpy', 'scipy', 'pkg_resources', 'setuptools'],
     noarchive=False,
 )
 
