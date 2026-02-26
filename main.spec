@@ -5,7 +5,7 @@ import sys
 import os
 
 # Anchor all paths to the spec file's directory
-SPEC_DIR = os.path.dirname(os.path.abspath(SPECPATH if 'SPECPATH' in dir() else __file__))
+SPEC_DIR = SPECPATH if 'SPECPATH' in dir() else os.path.dirname(os.path.abspath(__file__))
 CODE_DIR = os.path.join(SPEC_DIR, 'code')
 
 # Collect all submodules and dependencies
