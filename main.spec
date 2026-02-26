@@ -25,6 +25,10 @@ hiddenimports = [
     'support',
     'monster',
     'debug',
+    'jaraco',
+    'jaraco.text',
+    'jaraco.functools',
+    'jaraco.context',
 ]
 
 # Collect pygame and pytmx
