@@ -2,41 +2,28 @@
 #
 # PyInstaller spec file for Pokemon RPG
 # This file controls how PyInstaller builds the Windows executable
-from PyInstaller.utils.hooks import collect_submodules, collect_all
+from PyInstaller.utils.hooks import collect_all
 import os
 
-# Anchor all paths to the spec file's directory
-SPEC_DIR = SPECPATH if 'SPECPATH' in dir() else os.path.dirname(os.path.abspath(__file__))
-CODE_DIR = os.path.join(SPEC_DIR, 'code')
+datas = [
+    ('data', 'data'),
+    ('graphics', 'graphics'),
+    ('audio', 'audio'),
+    ('code', 'code'),  # Include game code as data files for sys.path import
+]
+binaries = []
+hiddenimports = [
+    'pygame',
+    'pytmx',
+    'pytmx.util_pygame',
+]
 
 a = Analysis(
-    [os.path.join(SPEC_DIR, 'run_game.py')],
-    pathex=[CODE_DIR, SPEC_DIR],
-    binaries=[],
-    datas=[
-        ('data', 'data'),
-        ('graphics', 'graphics'),
-        ('audio', 'audio'),
-    ],
-    hiddenimports=[
-        'pygame',
-        'pytmx',
-        'pytmx.util_pygame',
-        'main',
-        'settings',
-        'game_data',
-        'sprites',
-        'entities',
-        'groups',
-        'dialog',
-        'monster_index',
-        'battle',
-        'timer',
-        'evolution',
-        'support',
-        'monster',
-        'debug',
-    ],
+    ['run_game.py'],
+    pathex=[],
+    binaries=binaries,
+    datas=datas,
+    hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

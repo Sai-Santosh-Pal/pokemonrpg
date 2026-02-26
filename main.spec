@@ -1,36 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
-from PyInstaller.utils.hooks import collect_submodules, collect_data_files
 from PyInstaller.utils.hooks import collect_all
 import sys
 import os
-
-# Anchor all paths to the spec file's directory
-SPEC_DIR = SPECPATH if 'SPECPATH' in dir() else os.path.dirname(os.path.abspath(__file__))
-CODE_DIR = os.path.join(SPEC_DIR, 'code')
 
 # Collect all submodules and dependencies
 datas = [
     ('audio', 'audio'),
     ('graphics', 'graphics'),
     ('data', 'data'),
+    ('code', 'code'),  # Include game code as data files for sys.path import
 ]
 binaries = []
-hiddenimports = [
-    'main',
-    'settings',
-    'game_data',
-    'sprites',
-    'entities',
-    'groups',
-    'dialog',
-    'monster_index',
-    'battle',
-    'timer',
-    'evolution',
-    'support',
-    'monster',
-    'debug',
-]
+hiddenimports = []
 
 # Collect pygame and pytmx
 tmp_ret = collect_all('pygame')
@@ -44,8 +25,8 @@ binaries += tmp_ret[1]
 hiddenimports += tmp_ret[2]
 
 a = Analysis(
-    [os.path.join(SPEC_DIR, 'run_game.py')],
-    pathex=[CODE_DIR, SPEC_DIR],
+    ['run_game.py'],
+    pathex=[],
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
