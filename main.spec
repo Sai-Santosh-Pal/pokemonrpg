@@ -4,6 +4,10 @@ from PyInstaller.utils.hooks import collect_all
 import sys
 import os
 
+# Anchor all paths to the spec file's directory
+SPEC_DIR = os.path.dirname(os.path.abspath(SPECPATH if 'SPECPATH' in dir() else __file__))
+CODE_DIR = os.path.join(SPEC_DIR, 'code')
+
 # Collect all submodules and dependencies
 datas = [
     ('audio', 'audio'),
@@ -40,8 +44,8 @@ binaries += tmp_ret[1]
 hiddenimports += tmp_ret[2]
 
 a = Analysis(
-    ['run_game.py'],
-    pathex=[os.path.abspath('code')],
+    [os.path.join(SPEC_DIR, 'run_game.py')],
+    pathex=[CODE_DIR, SPEC_DIR],
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,

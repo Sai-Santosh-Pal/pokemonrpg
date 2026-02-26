@@ -5,9 +5,13 @@
 from PyInstaller.utils.hooks import collect_submodules, collect_all
 import os
 
+# Anchor all paths to the spec file's directory
+SPEC_DIR = os.path.dirname(os.path.abspath(SPECPATH if 'SPECPATH' in dir() else __file__))
+CODE_DIR = os.path.join(SPEC_DIR, 'code')
+
 a = Analysis(
-    ['run_game.py'],
-    pathex=[os.path.abspath('code')],
+    [os.path.join(SPEC_DIR, 'run_game.py')],
+    pathex=[CODE_DIR, SPEC_DIR],
     binaries=[],
     datas=[
         ('data', 'data'),
