@@ -12,6 +12,7 @@ datas = [
 ]
 binaries = []
 hiddenimports = [
+    'main',
     'settings',
     'game_data',
     'sprites',
@@ -39,8 +40,8 @@ binaries += tmp_ret[1]
 hiddenimports += tmp_ret[2]
 
 a = Analysis(
-    ['code/main.py'],
-    pathex=['code'],
+    ['run_game.py'],
+    pathex=[os.path.abspath('code')],
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
