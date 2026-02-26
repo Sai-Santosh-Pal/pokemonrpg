@@ -43,6 +43,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Remove code/__init__.py to prevent package namespace conflicts
+        run: rm -f code/__init__.py
+
       - name: Build executable
         env:
           SDL_VIDEODRIVER: dummy
