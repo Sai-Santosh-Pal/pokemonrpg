@@ -9,6 +9,8 @@
 - Stand near an NPC or interactive object.
 - Press **Space** to talk or trigger events.
 - Battles start when interacting with trainers or encountering wild monsters in grass.
+- Catch when your opponent is on low health
+- Use ESC to escape 
 
 ### Navigation
 - Use Arrow Keys to move between menu options.
