@@ -27,10 +27,12 @@
 
 ### Objectives
 - Explore wild grass areas to encounter monsters.
-- Catch new monsters and add them to your roster.
+- Catch new monsters and add them to your roster. -> only possible when health is low 
 - Gain experience and level them up.
 - Evolve monsters at higher levels.
 - Defeat trainers and gym leaders to progress.
+
+# NOTE - IF SOMETHING GETS STUCK IN A LOOP, JUST CLICK ESC
 
 ## Credits
 ### Artwork by Scarloxy: https://scarloxy.itch.io/mpwsp01
